@@ -7,6 +7,7 @@ if __name__ == '__main__':
     gevent.monkey.patch_all()
 
 # start new relic if instructed to do so
+from .extensions import refcount
 from .extensions import factory
 from .extras import enewrelic
 from .server import env
