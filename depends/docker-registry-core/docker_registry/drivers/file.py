@@ -23,11 +23,14 @@ This is a simple filesystem based driver.
 """
 
 import os
+import logging
 import shutil
 
 from ..core import driver
 from ..core import exceptions
 from ..core import lru
+
+logger = logging.getLogger(__name__)
 
 
 class Storage(driver.Base):
@@ -42,7 +45,13 @@ class Storage(driver.Base):
         if create is True:
             dirname = os.path.dirname(path)
             if not os.path.exists(dirname):
-                os.makedirs(dirname)
+                try:
+                    os.makedirs(dirname)
+                except OSError, e:
+                    logger.debug(
+                        "DEBUG: Path already exists, _init_path:\n%s\n" % e
+                    )
+
         return path
 
     @lru.get
