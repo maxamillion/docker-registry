@@ -22,6 +22,15 @@ def tag_created(sender, namespace, repository, tag, value=None):
                        repository=repository,
                        tag=tag,
                        image_id=value)
+
+        # NOTE: This is kind of a hack and it does technically make a
+        # 'docker push' slower but the performance hit is "worth it" in this
+        # instance for the benefits of not running out of disk space.
+        #
+        # The docker client (docker cli) does not ever call a DELETE to the API
+        # so remove_references is never called because the signal to untagging
+        # is linked to that action in the docker-registry REST API
+        init_references()
     except Exception as e:
         logger.exception("Error adding references: %s" % e)
 
